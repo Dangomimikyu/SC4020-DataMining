@@ -1,0 +1,11 @@
+{
+  "tau": 0.2,
+  "n_p": 10,
+  "dev_ari": 0.3418,
+  "best_dev_ari": 0.3475,
+  "rule": "best mean dev ARI; within 0.01 of it, smallest n_p",
+  "nmi_rule_picked": {
+    "tau": 0.8,
+    "n_p": 10
+  }
+}
