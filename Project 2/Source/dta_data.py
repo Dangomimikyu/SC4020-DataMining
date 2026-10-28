@@ -1,16 +1,3 @@
-"""
-Shared data loading, cleaning and splitting for DAVIS and KIBA (Tasks 2 and 3).
-
-Cleaning mirrors clean_and_dedup() in Task1.ipynb so every task uses the same matrix:
-    1. keep observed (non-NaN) and finite scores
-    2. DAVIS only: require Kd > 0, then pKd = 9 - log10(Kd)
-    3. key ligands by canonical SMILES and targets by amino-acid sequence
-    4. average repeated (ligand, target) pairs
-
-Usage:
-    from dta_data import load_split
-    train, val, test = load_split('davis')   # columns: lig_id, tgt_id, score, ...
-"""
 import json
 import pickle
 import urllib.request

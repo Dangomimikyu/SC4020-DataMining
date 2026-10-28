@@ -1,17 +1,3 @@
-"""
-Collaborative filtering for drug-target scores (Task 2).
-
-Framing: ligand = user, target = item, binding score = rating.
-The matrix holds training observations only; missing cells are "not measured", never 0.
-
-Two models share one interface (fit / predict / save / load_cf):
-    BiasedMF  r_hat(l, t) = mu + b_l + b_t + p_l . q_t        (fitted with ALS)
-    ItemKNN   r_hat(l, t) = baseline(l, t) + weighted residuals of the k targets most
-              similar to t that ligand l has measured        (target-target similarity)
-
-Fallbacks for unknown ligand / target / no neighbours are explicit and counted, so the
-analysis can report how often a prediction is not really "collaborative".
-"""
 import json
 
 import numpy as np

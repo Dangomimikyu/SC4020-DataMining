@@ -1,14 +1,3 @@
-"""
-Task 2: tune CF models on validation, save checkpoints, verify reloading.
-
-    python train_cf.py            # both datasets
-    python train_cf.py davis      # one dataset
-
-Outputs
-    saved_models/<name>_cf.npz        best model on validation (used by the case study)
-    saved_models/<name>_mf.npz, _knn.npz   best of each model type, for comparison
-    Results/task2_tuning_<name>.csv   every hyperparameter setting with train/val MSE
-"""
 import itertools
 import sys
 import time
