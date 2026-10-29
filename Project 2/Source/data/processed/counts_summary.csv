@@ -1,0 +1,12 @@
+,DAVIS (pKd),KIBA
+ligands (orig),68.0,2111.0
+targets (orig),442.0,229.0
+observed pairs (orig),30056.0,118254.0
+ligands (dedup),68.0,2068.0
+targets (dedup),379.0,229.0
+observed pairs (dedup),25772.0,117656.0
+sparsity (dedup),0.0,0.7516
+score mean,5.397,7.932
+score std,0.811,0.03
+min,5.0,7.764
+max,10.62,8.959
