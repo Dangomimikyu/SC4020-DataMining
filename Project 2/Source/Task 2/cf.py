@@ -108,12 +108,6 @@ class BiasedMF(_Base):
         pred[kt] += self.bt[ti[kt]]
         both = kl & kt
         pred[both] += np.einsum('ij,ij->i', self.P[li[both]], self.Q[ti[both]])
-        
-        # Diagnostic warning if unknown keys are detected
-        unknown_l = int((~kl).sum())
-        unknown_t = int((~kt).sum())
-        if unknown_l > 0 or unknown_t > 0:
-            print(f"[WARNING predict()] Encountered unknown IDs -> unknown_ligand: {unknown_l}, unknown_target: {unknown_t}")
             
         self.last_fallback = dict(unknown_ligand=unknown_l, unknown_target=unknown_t)
         return pred
