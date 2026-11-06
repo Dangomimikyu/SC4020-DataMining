@@ -1,8 +1,11 @@
 import json
+import sys
 from pathlib import Path
 import numpy as np
 import pandas as pd
 from sklearn.metrics import mean_squared_error
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))   # shared dta_data.py / cf.py
 
 from dta_data import load_split
 from cf import load_cf
