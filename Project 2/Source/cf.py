@@ -1,6 +1,31 @@
+"""
+Collaborative filtering for drug-target scores (Task 2).
+
+Framing: ligand = user, target = item, binding score = rating.
+The matrix holds training observations only; missing cells are "not measured", never 0.
+
+Two models share one interface (fit / predict / save / load_cf):
+    BiasedMF  r_hat(l, t) = mu + b_l + b_t + p_l . q_t        (fitted with ALS)
+    ItemKNN   r_hat(l, t) = baseline(l, t) + weighted residuals of the k targets most
+              similar to t that ligand l has measured        (target-target similarity)
+
+Fallbacks for unknown ligand / target / no neighbours are explicit and counted, so the
+analysis can report how often a prediction is not really "collaborative".
+"""
 import json
 
 import numpy as np
+
+
+def _key(x):
+    """
+    normalise an id to the form used in the index tables.
+
+    ids arrive as python str, numpy str_ or (for DAVIS CIDs) ints depending on whether
+    they came from clean(), a split csv or a checkpoint, and csv round-trips can add
+    stray whitespace. normalising in one place keeps fit and predict in agreement.
+    """
+    return str(x).strip()
 
 
 class _Base:
@@ -12,17 +37,17 @@ class _Base:
 
     # ---------- index mapping ----------
     def _index(self, lig_ids, tgt_ids, scores):
-        self.lig_ids = np.array(sorted(set(lig_ids)), dtype=str)
-        self.tgt_ids = np.array(sorted(set(tgt_ids)), dtype=str)
+        self.lig_ids = np.array(sorted({_key(x) for x in lig_ids}), dtype=str)
+        self.tgt_ids = np.array(sorted({_key(x) for x in tgt_ids}), dtype=str)
         self._lig_pos = {x: i for i, x in enumerate(self.lig_ids)}
         self._tgt_pos = {x: i for i, x in enumerate(self.tgt_ids)}
-        li = np.array([self._lig_pos[x] for x in lig_ids])
-        ti = np.array([self._tgt_pos[x] for x in tgt_ids])
+        li = np.array([self._lig_pos[_key(x)] for x in lig_ids])
+        ti = np.array([self._tgt_pos[_key(x)] for x in tgt_ids])
         return li, ti, np.asarray(scores, dtype=float)
 
     def _lookup(self, lig_ids, tgt_ids):
-        li = np.array([self._lig_pos.get(str(x), -1) for x in lig_ids])
-        ti = np.array([self._tgt_pos.get(str(x), -1) for x in tgt_ids])
+        li = np.array([self._lig_pos.get(_key(x), -1) for x in lig_ids])
+        ti = np.array([self._tgt_pos.get(_key(x), -1) for x in tgt_ids])
         return li, ti
 
     # ---------- shared bias baseline: mu + b_l + b_t ----------
@@ -54,7 +79,8 @@ class _Base:
                             tgt_ids=self.tgt_ids, **self._state())
 
     def _restore(self, z):
-        self.lig_ids, self.tgt_ids = z['lig_ids'].astype(str), z['tgt_ids'].astype(str)
+        self.lig_ids = np.array([_key(x) for x in z['lig_ids']], dtype=str)
+        self.tgt_ids = np.array([_key(x) for x in z['tgt_ids']], dtype=str)
         self._lig_pos = {x: i for i, x in enumerate(self.lig_ids)}
         self._tgt_pos = {x: i for i, x in enumerate(self.tgt_ids)}
 

@@ -8,6 +8,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.metrics import mean_squared_error
 
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))   # shared dta_data.py / cf.py
+
 from cf import MODELS, load_cf
 from dta_data import SCALES, load_split
 
